@@ -9,34 +9,74 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  //provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
-model Users {
-  id String @id @default(uuid())
-  name String
-  email String
-  password String
+//yarn prisma migrate dev
+model TbUsuarios {
+  CoUsuario         String    @id @default(uuid())
+  NoUsuario       String
+  email      String
+  password   String
   created_at DateTime? @default(now())
   updated_at DateTime? @default(now())
-  @@map("users")
-}
 
-model Product {
-  id String @id @default(uuid())
-  nome String
-  quantidade Int
-  descricao String
-  category Category @relation(fields: [categoryId], references: [id])
-  categoryId String
-
-}
-
-model Category {
-  id String @id @default(uuid())
-  nome String
-  product Product[]
+  @@map("TbUsuario")
 }
 
 
+
+model TbProduto {
+  CoProduto  String  @id @default(uuid())
+  NoProduto  String  @db.VarChar(50)
+  NoDescricao String @db.VarChar(200)
+  VaProduto  Decimal @db.Decimal(10, 2)
+  QtEstoque  Int
+  imageUrl String 
+  categoria TbCategoria @relation(fields: [categoria_id], references: [CoCategoria])
+  categoria_id String
+  TbPedidoItem TbPedidoItem[]
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+  
+  @@map("TbProduto")
+}
+
+model TbPedido {
+  CoPedido       String   @id @default(uuid())
+  DaAbertura     DateTime
+  DaEncerramento DateTime?
+  VaPedido       Decimal  @db.Decimal(10, 2)
+  TbPedidoItem TbPedidoItem[]
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+  
+  @@map("TbPedido")
+}
+
+model TbPedidoItem {
+  IdPedidoItem  String   @id @default(uuid())
+  VaItem        Decimal  @db.Decimal(10, 2)
+  QtItem        Int
+  VaTotalItem   Decimal  @db.Decimal(10, 2)
+  CoPedido      String
+  CoProduto     String
+  TbPedido      TbPedido   @relation(fields: [CoPedido], references: [CoPedido])
+  TbProduto     TbProduto  @relation(fields: [CoProduto], references: [CoProduto])
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+  
+  @@map("TbPedidoItem")
+}
+
+
+model TbCategoria {
+  CoCategoria    String    @id @default(uuid())
+  NoCategoria    String
+  produto TbProduto[]
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+  
+  @@map("TbCategoria")
+}

@@ -1,0 +1,45 @@
+services:
+    postgres-db:
+        image: postgres:latest
+        ports:
+            - "5434:5434"
+        volumes:
+            - postgresdb-vendas-volume:/data/db
+        restart: always
+
+    backend:
+        container_name: api-vendas
+        build: ./backend
+        restart: always
+        ports:
+            - 3333:3333
+        depends_on:
+            - postgres-db
+        env_file:
+            - ./backend/.env
+
+    frontend:
+        container_name: font-vendas
+        build: ./frontend
+        depends_on:
+            - backend
+        env_file:
+            - ./frontend/.env
+        volumes:
+            - front-vendas-volume:/var/www/html
+
+    nginx:
+        container_name: nginx-vendas
+        build: ./nginx
+        ports:
+            - 80:80
+        volumes:
+            - front-vendas-volume:/var/www/html
+        depends_on:
+            - postgres-db
+            - backend
+            - frontend
+
+volumes:
+    postgresdb-vendas-volume:
+    front-vendas-volume:

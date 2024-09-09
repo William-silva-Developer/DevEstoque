@@ -1,13 +1,17 @@
 import { Router } from "express"
-import { ControllerAuthUser } from "./controllers/authUser/controllerAuthUser"
-import { createCategoryController } from "./controllers/category/createCategoryController"
+import { ControllerAuthUser } from "./controllers/authenticatedUser/controllerAuthUser"
+import { createCategoryController } from "./controllers/categories/createCategoryController"
 import { isAuthenticated } from "./middleWares/authrizedRoutes/isAuthenticated"
-import { ProductController } from "./controllers/product/productController"
-import { ListAllproductController } from "./controllers/product/listAllproductController"
-import { ListAllCategoryController } from "./controllers/category/listAllCategoryController"
-import { DeleteProductController } from "./controllers/product/deleteProductController"
-import { UpdateProductController } from "./controllers/product/updateProductController"
-import { DeleteCategoryController } from "./controllers/category/deleteCategoryController"
+import { ProductController } from "./controllers/products/productController"
+import { ListAllproductController } from "./controllers/products/listAllproductController"
+import { ListAllCategoryController } from "./controllers/categories/listAllCategoryController"
+import { DeleteProductController } from "./controllers/products/deleteProductController"
+import { UpdateProductController } from "./controllers/products/updateProductController"
+import { DeleteCategoryController } from "./controllers/categories/deleteCategoryController"
+import { ListOrderItemController } from "./controllers/orderItem/listOrderItemController"
+import { CreateOrderItemController } from "./controllers/orderItem/createOrderItemController"
+import { UpdateOrderItemController } from "./controllers/orderItem/updateOrderItemController"
+import { DeleteOrderItemController } from "./controllers/orderItem/deleteOrderItemController"
 
 const router = Router()
 //AUTENTICAÇÃO
@@ -48,6 +52,24 @@ router.put(
     "/updateProduct/",
     isAuthenticated,
     new UpdateProductController().handle
+)
+
+//PEDIDO
+router.get("/listOrders", isAuthenticated, new ListOrderItemController().handle)
+router.post(
+    "/createOrder",
+    isAuthenticated,
+    new CreateOrderItemController().handle
+)
+router.put(
+    "/updateOrder",
+    isAuthenticated,
+    new UpdateOrderItemController().handle
+)
+router.delete(
+    "/deleteOrder",
+    isAuthenticated,
+    new DeleteOrderItemController().handle
 )
 
 export { router }

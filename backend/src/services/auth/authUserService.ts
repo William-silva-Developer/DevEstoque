@@ -9,7 +9,7 @@ interface IParamsLogin {
 
 class AuthUserService {
     async execute({ email, password }: IParamsLogin) {
-        const user = await prismaClient.users.findFirst({
+        const user = await prismaClient.tbUsuarios.findFirst({
             where: {
                 email: email,
             },
@@ -23,11 +23,16 @@ class AuthUserService {
         if (!passwordNotExist) throw new Error("Usuário/senha são inválidos")
 
         const token = sign(
-            { name: user.name, email: user.email },
+            { name: user.NoUsuario, email: user.email },
             process.env.JWT_SECRET_KEY,
-            { subject: user.id, expiresIn: "30d" }
+            { subject: user.CoUsuario, expiresIn: "30d" }
         )
-        return { id: user.id, email: user.email, name: user.name, token: token }
+        return {
+            id: user.CoUsuario,
+            email: user.email,
+            name: user.NoUsuario,
+            token: token,
+        }
     }
 }
 export { AuthUserService }
